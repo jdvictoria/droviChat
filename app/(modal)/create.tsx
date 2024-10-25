@@ -13,7 +13,7 @@ export default function CreateGroupModal() {
 
     const [groupName, setGroupName] = useState('');
     const [groupDescription, setGroupDescription] = useState('');
-    const [groupIcon, setGroupIcon] = useState('');
+    const [groupIcon, setGroupIcon] = useState('https://i.ibb.co/JHPgJz1/chat-icon.png'); // Set default icon url
 
     const handleGroupCreate = async () => {
         await createGroupChat({
@@ -42,7 +42,7 @@ export default function CreateGroupModal() {
             <TextInput style={styles.textInput} value={groupDescription} onChangeText={setGroupDescription}/>
 
             <Text style={styles.label}>Icon URL</Text>
-            <TextInput style={styles.textInput} value={groupIcon} onChangeText={setGroupIcon}/>
+            <TextInput style={styles.textInput} value={groupIcon} onChangeText={setGroupIcon} editable={false}/>
 
             <TouchableOpacity
                 style={{
