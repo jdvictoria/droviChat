@@ -11,9 +11,9 @@ export default function CreateGroupModal() {
 
     const createGroupChat = useMutation(api.groups.createGroup);
 
-    const [groupName, setGroupName] = useState('');
-    const [groupDescription, setGroupDescription] = useState('');
-    const [groupIcon, setGroupIcon] = useState('https://i.ibb.co/JHPgJz1/chat-icon.png'); // Set default icon url
+    const [groupName, setGroupName] = useState<string>('');
+    const [groupDescription, setGroupDescription] = useState<string>('');
+    const [groupIcon, setGroupIcon] = useState<string>('https://i.ibb.co/JHPgJz1/chat-icon.png'); // Set default icon url
 
     const handleGroupCreate = async () => {
         await createGroupChat({
