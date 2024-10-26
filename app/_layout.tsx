@@ -1,11 +1,12 @@
-import { MessageSquarePlus, X } from 'lucide-react-native';
+import { MessageSquarePlus, X, ScanQrCode, Link as LinkIcon } from 'lucide-react-native';
 
 import { useEffect, useState } from "react";
-import { Stack, Link, useRouter } from "expo-router";
+import { Stack, Link, useRouter, useGlobalSearchParams } from "expo-router";
 
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import Fallback from "./fallback";
 
+import QRCode from "react-native-qrcode-svg";
 import * as Notifications from 'expo-notifications';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -25,6 +26,11 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 export default function RootLayoutNav() {
     const router = useRouter();
+    const params = useGlobalSearchParams();
+
+    const chatUuid = Array.isArray(params.chat_uuid) ? params.chat_uuid[0] : params.chat_uuid;
+    const [showQRCode, setShowQRCode] = useState(false);
+
     const [isConnected, setIsConnected] = useState(true);
 
     useEffect(() => {
@@ -56,6 +62,11 @@ export default function RootLayoutNav() {
                     name="index"
                     options={{
                         headerTitle: 'Chats',
+                        headerLeft: () => (
+                            <TouchableOpacity>
+                                <ScanQrCode/>
+                            </TouchableOpacity>
+                        ),
                         headerRight: () => (
                             <Link href={'/(modal)/create'} asChild>
                                 <TouchableOpacity>
@@ -79,8 +90,23 @@ export default function RootLayoutNav() {
                         ),
                     }}
                 />
-                <Stack.Screen name="(chat)/[chat_uuid]" options={{ headerTitle: 'Chat' }}/>
+                <Stack.Screen
+                    name="(chat)/[chat_uuid]"
+                    options={{
+                        headerTitle: 'Chat',
+                        headerRight: () => (
+                            <TouchableOpacity onPress={() => setShowQRCode(prev => !prev)}>
+                                <LinkIcon/>
+                            </TouchableOpacity>
+                        )
+                    }}
+                />
             </Stack>
+            {showQRCode && (
+                <View style={{ alignItems: "center", margin: 20 }}>
+                    <QRCode value={chatUuid} size={200} />
+                </View>
+            )}
         </ConvexProvider>
     )
 }
