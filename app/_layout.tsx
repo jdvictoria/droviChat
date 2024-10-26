@@ -46,7 +46,7 @@ export default function RootLayoutNav() {
                         ),
                     }}
                 />
-                <Stack.Screen name="(chat)/[chatuuid]" options={{ headerTitle: 'Chat' }} />
+                <Stack.Screen name="(chat)/[chat_uuid]" options={{ headerTitle: 'Chat' }} />
             </Stack>
         </ConvexProvider>
     )
