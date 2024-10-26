@@ -41,9 +41,6 @@ export default function CreateGroupModal() {
             <Text style={styles.label}>Description</Text>
             <TextInput style={styles.textInput} value={groupDescription} onChangeText={setGroupDescription}/>
 
-            <Text style={styles.label}>Icon URL</Text>
-            <TextInput style={styles.textInput} value={groupIcon} onChangeText={setGroupIcon} editable={false}/>
-
             <TouchableOpacity
                 style={{
                     backgroundColor: '#F9D949',
