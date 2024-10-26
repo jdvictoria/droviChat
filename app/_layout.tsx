@@ -32,8 +32,8 @@ export default function RootLayoutNav() {
     const router = useRouter();
     const params = useGlobalSearchParams();
 
-    const [showCamera, setShowCamera] = useState(false);
-    const [hasNavigated, setHasNavigated] = useState(false);
+    const [showCamera, setShowCamera] = useState<boolean>(false);
+    const [hasNavigated, setHasNavigated] = useState<boolean>(false);
 
     const handleQRCodeScanned = async (data: any) => {
         if (hasNavigated) return;
@@ -55,9 +55,9 @@ export default function RootLayoutNav() {
     const debouncedHandleQRCodeScanned = debounce(handleQRCodeScanned, 250);
 
     const chatUuid = Array.isArray(params.chat_uuid) ? params.chat_uuid[0] : params.chat_uuid;
-    const [showQRCode, setShowQRCode] = useState(false);
+    const [showQRCode, setShowQRCode] = useState<boolean>(false);
 
-    const [isConnected, setIsConnected] = useState(true);
+    const [isConnected, setIsConnected] = useState<boolean>(true);
 
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
