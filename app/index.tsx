@@ -48,7 +48,7 @@ export default function Page() {
                 backgroundColor: '#F8F5EA',
             }}>
                 {groups.map((group) => (
-                    <Link href={{ pathname: '/(chat)/[chatuuid]', params: { chatuuid: group._id } }} key={group._id.toString()} asChild>
+                    <Link href={{ pathname: '/(chat)/[chat_uuid]', params: { chat_uuid: group._id } }} key={group._id.toString()} asChild>
                         <TouchableOpacity
                             style={{
                                 flexDirection: 'row',
