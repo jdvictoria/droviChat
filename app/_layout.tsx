@@ -6,6 +6,7 @@ import { Stack, Link, useRouter, useGlobalSearchParams } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 import Fallback from "./fallback";
 
+import { CameraView } from "expo-camera";
 import QRCode from "react-native-qrcode-svg";
 import * as Notifications from 'expo-notifications';
 import NetInfo from '@react-native-community/netinfo';
@@ -18,6 +19,9 @@ Notifications.setNotificationHandler({
     }),
 });
 
+import debounce from "../utils/helper";
+
+import { api } from "../convex/_generated/api";
 import { ConvexReactClient, ConvexProvider } from "convex/react";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -27,6 +31,28 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 export default function RootLayoutNav() {
     const router = useRouter();
     const params = useGlobalSearchParams();
+
+    const [showCamera, setShowCamera] = useState(false);
+    const [hasNavigated, setHasNavigated] = useState(false);
+
+    const handleQRCodeScanned = async (data: any) => {
+        if (hasNavigated) return;
+
+        const qr_uuid = data.raw;
+
+        const group = await convex.query(api.groups.fetchSingleGroup, { id: qr_uuid });
+
+        if (group) {
+            setHasNavigated(true);
+            router.push(`/(chat)/${qr_uuid}`);
+        } else {
+            alert('Invalid QR Code');
+        }
+
+        setShowCamera(false);
+    };
+
+    const debouncedHandleQRCodeScanned = debounce(handleQRCodeScanned, 250);
 
     const chatUuid = Array.isArray(params.chat_uuid) ? params.chat_uuid[0] : params.chat_uuid;
     const [showQRCode, setShowQRCode] = useState(false);
@@ -63,8 +89,8 @@ export default function RootLayoutNav() {
                     options={{
                         headerTitle: 'Chats',
                         headerLeft: () => (
-                            <TouchableOpacity>
-                                <ScanQrCode/>
+                            <TouchableOpacity onPress={() => setShowCamera(prev => !prev)}>
+                                <ScanQrCode />
                             </TouchableOpacity>
                         ),
                         headerRight: () => (
@@ -102,9 +128,18 @@ export default function RootLayoutNav() {
                     }}
                 />
             </Stack>
+            {showCamera && (
+                <CameraView
+                    onBarcodeScanned={debouncedHandleQRCodeScanned}
+                    barcodeScannerSettings={{
+                        barcodeTypes: ["qr"],
+                    }}
+                    style={{ flex: 1 }}
+                />
+            )}
             {showQRCode && (
                 <View style={{ alignItems: "center", margin: 20 }}>
-                    <QRCode value={chatUuid} size={200} />
+                    <QRCode value={chatUuid} size={300} />
                 </View>
             )}
         </ConvexProvider>
