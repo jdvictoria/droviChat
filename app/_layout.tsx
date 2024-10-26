@@ -1,7 +1,12 @@
 import { MessageSquarePlus, X } from 'lucide-react-native';
 
-import { Stack, Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Stack, Link, useRouter } from "expo-router";
+
 import { TouchableOpacity } from "react-native";
+import Fallback from "./fallback";
+
+import NetInfo from '@react-native-community/netinfo';
 
 import { ConvexReactClient, ConvexProvider } from "convex/react";
 
@@ -10,6 +15,25 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 });
 
 export default function RootLayoutNav() {
+    const router = useRouter();
+    const [isConnected, setIsConnected] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(state => {
+            if (state.isConnected) {
+                setIsConnected(true);
+            } else {
+                setIsConnected(false);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [router]);
+
+    if (!isConnected) {
+        return <Fallback/>;
+    }
+
     return (
         <ConvexProvider client={convex}>
             <Stack
@@ -22,7 +46,7 @@ export default function RootLayoutNav() {
                 <Stack.Screen
                     name="index"
                     options={{
-                        headerTitle: 'My Chats',
+                        headerTitle: 'Chats',
                         headerRight: () => (
                             <Link href={'/(modal)/create'} asChild>
                                 <TouchableOpacity>
@@ -35,7 +59,7 @@ export default function RootLayoutNav() {
                 <Stack.Screen
                     name="(modal)/create"
                     options={{
-                        headerTitle: 'Start a Chat',
+                        headerTitle: 'Create Group',
                         presentation: 'modal',
                         headerLeft: () => (
                             <Link href={'/'} asChild>
@@ -46,7 +70,7 @@ export default function RootLayoutNav() {
                         ),
                     }}
                 />
-                <Stack.Screen name="(chat)/[chat_uuid]" options={{ headerTitle: 'Chat' }} />
+                <Stack.Screen name="(chat)/[chat_uuid]" options={{ headerTitle: 'Chat' }}/>
             </Stack>
         </ConvexProvider>
     )
