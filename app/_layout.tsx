@@ -6,7 +6,16 @@ import { Stack, Link, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import Fallback from "./fallback";
 
+import * as Notifications from 'expo-notifications';
 import NetInfo from '@react-native-community/netinfo';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
 
 import { ConvexReactClient, ConvexProvider } from "convex/react";
 

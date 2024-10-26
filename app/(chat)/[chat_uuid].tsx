@@ -19,6 +19,7 @@ import { Doc, Id } from '../../convex/_generated/dataModel';
 import { useConvex, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api"
 
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ChatPage() {
@@ -63,9 +64,27 @@ export default function ChatPage() {
     };
 
     useEffect(() => {
-        setTimeout(() => {
-            listRef.current!.scrollToEnd({ animated: true });
-        }, 300);
+        const notifyNewMessage = async () => {
+            if (messages.length === 0) return;
+
+            const latestMessage = messages[messages.length - 1];
+            if (latestMessage.username !== username) {
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: `New message from ${latestMessage.username}`,
+                        body: latestMessage.message,
+                        data: { chat_uuid: latestMessage.chat_uuid as string },
+                    },
+                    trigger: null,
+                });
+            }
+
+            setTimeout(() => {
+                listRef.current?.scrollToEnd({ animated: true });
+            }, 300);
+        };
+
+        notifyNewMessage();
     }, [messages]);
 
     const renderMessage: ListRenderItem<Doc<'messages'>> = ({ item }) => {
