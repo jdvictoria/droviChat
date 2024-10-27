@@ -1,11 +1,10 @@
 import { WifiOff } from "lucide-react-native";
-
 import { View, Text, StyleSheet } from "react-native";
 
 export default function Fallback() {
     return (
-        <View style={styles.container}>
-            <WifiOff size={100} color="#3F3F3F" />
+        <View style={styles.container} testID="container">
+            <WifiOff size={100} color="#3F3F3F" testID="wifiOffIcon"/>
             <Text style={styles.text}>Weak / No Internet</Text>
         </View>
     );
