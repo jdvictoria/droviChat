@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from "expo-router";
 
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
+import {
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    Image
+} from "react-native";
 
 import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,12 +15,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 
-export default function Page() {
+export default function Index() {
     const groups = useQuery(api.groups.fetchAllGroups) || [];
 
     const [visible, setVisible] = useState<boolean>(false);
     const [userName, setUserName] = useState<string>('');
-    
+
     useEffect(() => {
         const fetchUser = async () => {
             const user = await AsyncStorage.getItem('user');
@@ -26,7 +32,7 @@ export default function Page() {
                 setUserName(user);
             }
         };
-        
+
         fetchUser();
     }, []);
 
@@ -41,15 +47,20 @@ export default function Page() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <ScrollView style={{
+        <View testID="main-view" style={{ flex: 1 }}>
+            <ScrollView testID="scroll-view" style={{
                 flex: 1,
                 padding: 10,
                 backgroundColor: '#F8F5EA',
             }}>
                 {groups.map((group) => (
-                    <Link href={{ pathname: '/(chat)/[chat_uuid]', params: { chat_uuid: group._id } }} key={group._id.toString()} asChild>
+                    <Link
+                        href={{ pathname: '/(chat)/[chat_uuid]', params: { chat_uuid: group._id } }}
+                        key={group._id.toString()}
+                        asChild
+                    >
                         <TouchableOpacity
+                            testID={`group-${group._id}`}
                             style={{
                                 flexDirection: 'row',
                                 gap: 10,
@@ -68,12 +79,11 @@ export default function Page() {
                                 elevation: 3,
                             }}
                         >
-                            <Image source={{ uri: group.icon }} style={{ width: 40, height: 40 }}/>
-
+                            <Image testID="group-image" source={{ uri: group.icon }} style={{ width: 40, height: 40 }}/>
                             <View style={{ flex: 1 }}>
                                 <Text>{group.title}</Text>
-                                <Text style={{ color: '#888' }}>{group.description}</Text>
-                                <Text style={{ color: '#888', marginTop: 5 }}>UUID: {group._id}</Text>
+                                <Text testID="group-description" style={{ color: '#888' }}>{group.description}</Text>
+                                <Text testID="group-uuid" style={{ color: '#888', marginTop: 5 }}>UUID: {group._id}</Text>
                             </View>
                         </TouchableOpacity>
                     </Link>
@@ -83,7 +93,7 @@ export default function Page() {
             <Dialog.Container visible={visible}>
                 <Dialog.Title>Input Username</Dialog.Title>
                 <Dialog.Description>Set your username to start chatting.</Dialog.Description>
-                <Dialog.Input onChangeText={setUserName}/>
+                <Dialog.Input testID="username-input" onChangeText={setUserName}/>
                 <Dialog.Button label="Set name" onPress={handleUserSet}/>
             </Dialog.Container>
         </View>
