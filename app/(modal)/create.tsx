@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-
-import { Text, KeyboardAvoidingView, Platform, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import {
+    Text,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity
+} from 'react-native';
 
 import { useMutation } from 'convex/react';
 import { api } from "../../convex/_generated/api";
 
 export default function CreateGroupModal() {
     const router = useRouter();
-
+    
     const createGroupChat = useMutation(api.groups.createGroup);
 
     const [groupName, setGroupName] = useState<string>('');
@@ -27,6 +33,7 @@ export default function CreateGroupModal() {
 
     return (
         <KeyboardAvoidingView
+            testID="container"
             style={{
                 flex: 1,
                 backgroundColor: '#F8F5EA',
@@ -36,12 +43,23 @@ export default function CreateGroupModal() {
             keyboardVerticalOffset={100}
         >
             <Text style={styles.label}>Name</Text>
-            <TextInput style={styles.textInput} value={groupName} onChangeText={setGroupName}/>
+            <TextInput
+                testID="nameInput"
+                style={styles.textInput}
+                value={groupName}
+                onChangeText={setGroupName}
+            />
 
-            <Text style={styles.label}>Description</Text>
-            <TextInput style={styles.textInput} value={groupDescription} onChangeText={setGroupDescription}/>
+            <Text testID="descriptionLabel" style={styles.label}>Description</Text>
+            <TextInput
+                testID="descriptionInput"
+                style={styles.textInput}
+                value={groupDescription}
+                onChangeText={setGroupDescription}
+            />
 
             <TouchableOpacity
+                testID="createButton"
                 style={{
                     backgroundColor: '#F9D949',
                     borderRadius: 5,
@@ -58,7 +76,8 @@ export default function CreateGroupModal() {
                         textAlign: 'center',
                         fontSize: 16,
                         fontWeight: 'bold',
-                }}>
+                    }}
+                >
                     Create
                 </Text>
             </TouchableOpacity>
