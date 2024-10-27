@@ -1,6 +1,7 @@
 import { SendHorizontal } from "lucide-react-native";
-import { useEffect, useRef, useState } from 'react';
-import { useLocalSearchParams, useRouter } from "expo-router";
+
+import { useEffect, useRef, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 
 import {
     SafeAreaView,
@@ -15,36 +16,26 @@ import {
     Keyboard
 } from "react-native";
 
-import { Doc, Id } from '../../convex/_generated/dataModel';
-import { useConvex, useMutation, useQuery } from "convex/react";
+import { Doc, Id } from "../../convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api"
 
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ChatPage() {
     const { chat_uuid } = useLocalSearchParams();
 
-    const router = useRouter();
-    const convex = useConvex();
-
     const [username, Username] = useState<string | null>(null);
 
     const listRef = useRef<FlatList>(null);
-    const messages = useQuery(api.messages.fetchMessage, { chat_uuid: chat_uuid as Id<'groups'> }) || [];
+    const messages = useQuery(api.messages.fetchMessage, { chat_uuid: chat_uuid as Id<"groups"> }) || [];
     const addMessage = useMutation(api.messages.sendMessage);
-    const [newMessage, setNewMessage] = useState<string>('');
-
-    useEffect(() => {
-        const loadGroup = async () => {
-            const groupInfo = await convex.query(api.groups.fetchSingleGroup, { id: chat_uuid as Id<'groups'> });
-        };
-        loadGroup();
-    }, [chat_uuid]);
+    const [newMessage, setNewMessage] = useState<string>("");
 
     useEffect(() => {
         const fetchUser = async () => {
-            const user = await AsyncStorage.getItem('user');
+            const user = await AsyncStorage.getItem("user");
             Username(user);
         };
 
@@ -55,11 +46,11 @@ export default function ChatPage() {
         Keyboard.dismiss();
 
         await addMessage({
-            chat_uuid: chat_uuid as Id<'groups'>,
+            chat_uuid: chat_uuid as Id<"groups">,
             message: newMessage,
-            username: username || 'Anonymous',
+            username: username || "Anonymous",
         });
-        setNewMessage('');
+        setNewMessage("");
     };
 
     useEffect(() => {
@@ -86,7 +77,7 @@ export default function ChatPage() {
         notifyNewMessage();
     }, [messages]);
 
-    const renderMessage: ListRenderItem<Doc<'messages'>> = ({ item }) => {
+    const renderMessage: ListRenderItem<Doc<"messages">> = ({ item }) => {
         const isUserMessage = item.username === username;
 
         return (
@@ -94,7 +85,7 @@ export default function ChatPage() {
                 style={[styles.messageContainer, isUserMessage ? styles.selfMessagesContainer : styles.otherMessageContainer]}
                 testID={`message-${item._id}`}
             >
-                {item.message !== '' && (
+                {item.message !== "" && (
                     <Text
                         style={[styles.messageText, isUserMessage ? styles.userMessageText : null]}
                         testID={`message-text-${item._id}`}
@@ -106,7 +97,7 @@ export default function ChatPage() {
                 <Text
                     style={{
                         fontSize: 12,
-                        color: '#474747',
+                        color: "#474747",
                     }}
                     testID={`message-timestamp-${item._id}`}
                 >
@@ -117,15 +108,15 @@ export default function ChatPage() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} testID="chat-page">
-            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#F8F5EA' }} behavior={'padding'} keyboardVerticalOffset={60} testID="keyboard-page">
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} testID="chat-page">
+            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F8F5EA" }} behavior={"padding"} keyboardVerticalOffset={60} testID="keyboard-page">
                 <FlatList ref={listRef} data={messages} renderItem={renderMessage} keyExtractor={(item) => item._id.toString()} ListFooterComponent={<View style={{ padding: 5 }} />} />
 
                 <View style={styles.inputContainer} testID="input-container">
-                    <View style={{ flexDirection: 'row' }} testID="composer-container">
+                    <View style={{ flexDirection: "row" }} testID="composer-container">
                         <TextInput style={styles.textInput} value={newMessage} onChangeText={setNewMessage} placeholder="Type your message" multiline={true} testID="message-input"/>
 
-                        <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={newMessage === ''} testID="send-button">
+                        <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={newMessage === ""} testID="send-button">
                             <SendHorizontal color="#3F3F3F"/>
                         </TouchableOpacity>
                     </View>
@@ -138,9 +129,9 @@ export default function ChatPage() {
 const styles = StyleSheet.create({
     inputContainer: {
         padding: 10,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        shadowColor: '#000',
+        backgroundColor: "#fff",
+        alignItems: "center",
+        shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: -8,
@@ -152,40 +143,40 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: "gray",
         borderRadius: 5,
         paddingHorizontal: 10,
         minHeight: 40,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
         paddingTop: 10,
     },
     sendButton: {
-        backgroundColor: '#F9D949',
+        backgroundColor: "#F9D949",
         borderRadius: 5,
         padding: 10,
         marginLeft: 10,
-        alignSelf: 'flex-end',
+        alignSelf: "flex-end",
     },
     messageContainer: {
         padding: 10,
         borderRadius: 10,
         marginTop: 10,
         marginHorizontal: 10,
-        maxWidth: '80%',
+        maxWidth: "80%",
     },
     selfMessagesContainer: {
-        backgroundColor: '#F9D949',
-        alignSelf: 'flex-end',
+        backgroundColor: "#F9D949",
+        alignSelf: "flex-end",
     },
     otherMessageContainer: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#fff',
+        alignSelf: "flex-start",
+        backgroundColor: "#fff",
     },
     messageText: {
         fontSize: 16,
-        flexWrap: 'wrap',
+        flexWrap: "wrap",
     },
     userMessageText: {
-        color: '#3d3d3d',
+        color: "#3d3d3d",
     },
 });

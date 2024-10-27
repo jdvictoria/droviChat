@@ -1,4 +1,4 @@
-import { MessageSquarePlus, X, ScanQrCode, Link as LinkIcon } from 'lucide-react-native';
+import { MessageSquarePlus, X, ScanQrCode, Link as LinkIcon } from "lucide-react-native";
 
 import { useEffect, useState } from "react";
 import { Stack, Link, useRouter, useGlobalSearchParams } from "expo-router";
@@ -8,8 +8,8 @@ import Fallback from "./fallback";
 
 import { CameraView } from "expo-camera";
 import QRCode from "react-native-qrcode-svg";
-import * as Notifications from 'expo-notifications';
-import NetInfo from '@react-native-community/netinfo';
+import * as Notifications from "expo-notifications";
+import NetInfo from "@react-native-community/netinfo";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -46,7 +46,7 @@ export default function RootLayoutNav() {
             setHasNavigated(true);
             router.push(`/(chat)/${qr_uuid}`);
         } else {
-            alert('Invalid QR Code');
+            alert("Invalid QR Code");
         }
 
         setShowCamera(false);
@@ -87,14 +87,14 @@ export default function RootLayoutNav() {
                 <Stack.Screen
                     name="index"
                     options={{
-                        headerTitle: 'Chats',
+                        headerTitle: "Chats",
                         headerLeft: () => (
                             <TouchableOpacity onPress={() => setShowCamera(prev => !prev)}>
                                 <ScanQrCode />
                             </TouchableOpacity>
                         ),
                         headerRight: () => (
-                            <Link href={'/(modal)/create'} asChild>
+                            <Link href={"/(modal)/create"} asChild>
                                 <TouchableOpacity>
                                     <MessageSquarePlus/>
                                 </TouchableOpacity>
@@ -105,10 +105,10 @@ export default function RootLayoutNav() {
                 <Stack.Screen
                     name="(modal)/create"
                     options={{
-                        headerTitle: 'Create Group',
-                        presentation: 'modal',
+                        headerTitle: "Create Group",
+                        presentation: "modal",
                         headerLeft: () => (
-                            <Link href={'/'} asChild>
+                            <Link href={"/"} asChild>
                                 <TouchableOpacity>
                                     <X/>
                                 </TouchableOpacity>
@@ -119,7 +119,7 @@ export default function RootLayoutNav() {
                 <Stack.Screen
                     name="(chat)/[chat_uuid]"
                     options={{
-                        headerTitle: 'Chat',
+                        headerTitle: "Chat",
                         headerRight: () => (
                             <TouchableOpacity onPress={() => setShowQRCode(prev => !prev)}>
                                 <LinkIcon/>

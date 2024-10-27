@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useState } from "react";
+import { useRouter } from "expo-router";
 import {
     Text,
     KeyboardAvoidingView,
@@ -7,9 +7,9 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity
-} from 'react-native';
+} from "react-native";
 
-import { useMutation } from 'convex/react';
+import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 export default function CreateGroupModal() {
@@ -17,9 +17,9 @@ export default function CreateGroupModal() {
     
     const createGroupChat = useMutation(api.groups.createGroup);
 
-    const [groupName, setGroupName] = useState<string>('');
-    const [groupDescription, setGroupDescription] = useState<string>('');
-    const [groupIcon, setGroupIcon] = useState<string>('https://i.ibb.co/JHPgJz1/chat-icon.png'); // Set default icon url
+    const [groupName, setGroupName] = useState<string>("");
+    const [groupDescription, setGroupDescription] = useState<string>("");
+    const [groupIcon, setGroupIcon] = useState<string>("https://i.ibb.co/JHPgJz1/chat-icon.png");
 
     const handleGroupCreate = async () => {
         await createGroupChat({
@@ -36,10 +36,10 @@ export default function CreateGroupModal() {
             testID="container"
             style={{
                 flex: 1,
-                backgroundColor: '#F8F5EA',
+                backgroundColor: "#F8F5EA",
                 padding: 20,
             }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             keyboardVerticalOffset={100}
         >
             <Text style={styles.label}>Name</Text>
@@ -61,21 +61,21 @@ export default function CreateGroupModal() {
             <TouchableOpacity
                 testID="createButton"
                 style={{
-                    backgroundColor: '#F9D949',
+                    backgroundColor: "#F9D949",
                     borderRadius: 5,
                     padding: 10,
                     marginVertical: 20,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
                 onPress={handleGroupCreate}
             >
                 <Text
                     style={{
-                        color: '#3F3F3F',
-                        textAlign: 'center',
+                        color: "#3F3F3F",
+                        textAlign: "center",
                         fontSize: 16,
-                        fontWeight: 'bold',
+                        fontWeight: "bold",
                     }}
                 >
                     Create
@@ -91,10 +91,10 @@ const styles = StyleSheet.create({
     },
     textInput: {
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: "gray",
         borderRadius: 5,
         paddingHorizontal: 10,
         minHeight: 40,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
     },
 });

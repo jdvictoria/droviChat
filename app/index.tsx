@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Link } from "expo-router";
 
 import {
@@ -19,11 +19,11 @@ export default function Index() {
     const groups = useQuery(api.groups.fetchAllGroups) || [];
 
     const [visible, setVisible] = useState<boolean>(false);
-    const [userName, setUserName] = useState<string>('');
+    const [userName, setUserName] = useState<string>("");
 
     useEffect(() => {
         const fetchUser = async () => {
-            const user = await AsyncStorage.getItem('user');
+            const user = await AsyncStorage.getItem("user");
             if (!user) {
                 setTimeout(() => {
                     setVisible(true);
@@ -40,7 +40,7 @@ export default function Index() {
         const fakeRandomId = (Math.random() + 1).toString(36).substring(7);
         const user = `${userName}#${fakeRandomId}`;
 
-        await AsyncStorage.setItem('user', user);
+        await AsyncStorage.setItem("user", user);
         setUserName(userName);
 
         setVisible(false);
@@ -51,25 +51,25 @@ export default function Index() {
             <ScrollView testID="scroll-view" style={{
                 flex: 1,
                 padding: 10,
-                backgroundColor: '#F8F5EA',
+                backgroundColor: "#F8F5EA",
             }}>
                 {groups.map((group) => (
                     <Link
-                        href={{ pathname: '/(chat)/[chat_uuid]', params: { chat_uuid: group._id } }}
+                        href={{ pathname: "/(chat)/[chat_uuid]", params: { chat_uuid: group._id } }}
                         key={group._id.toString()}
                         asChild
                     >
                         <TouchableOpacity
                             testID={`group-${group._id}`}
                             style={{
-                                flexDirection: 'row',
+                                flexDirection: "row",
                                 gap: 10,
-                                alignItems: 'center',
-                                backgroundColor: '#fff',
+                                alignItems: "center",
+                                backgroundColor: "#fff",
                                 padding: 10,
                                 borderRadius: 10,
                                 marginBottom: 10,
-                                shadowColor: '#000',
+                                shadowColor: "#000",
                                 shadowOffset: {
                                     width: 0,
                                     height: 1,
@@ -82,8 +82,8 @@ export default function Index() {
                             <Image testID="group-image" source={{ uri: group.icon }} style={{ width: 40, height: 40 }}/>
                             <View style={{ flex: 1 }}>
                                 <Text>{group.title}</Text>
-                                <Text testID="group-description" style={{ color: '#888' }}>{group.description}</Text>
-                                <Text testID="group-uuid" style={{ color: '#888', marginTop: 5 }}>UUID: {group._id}</Text>
+                                <Text testID="group-description" style={{ color: "#888" }}>{group.description}</Text>
+                                <Text testID="group-uuid" style={{ color: "#888", marginTop: 5 }}>UUID: {group._id}</Text>
                             </View>
                         </TouchableOpacity>
                     </Link>
