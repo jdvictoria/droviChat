@@ -1,6 +1,6 @@
 import { SendHorizontal } from "lucide-react-native";
 import { useEffect, useRef, useState } from 'react';
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import {
     SafeAreaView,
@@ -25,8 +25,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ChatPage() {
     const { chat_uuid } = useLocalSearchParams();
 
+    const router = useRouter();
     const convex = useConvex();
-    const navigation = useNavigation();
 
     const [username, Username] = useState<string | null>(null);
 
@@ -38,7 +38,6 @@ export default function ChatPage() {
     useEffect(() => {
         const loadGroup = async () => {
             const groupInfo = await convex.query(api.groups.fetchSingleGroup, { id: chat_uuid as Id<'groups'> });
-            navigation.setOptions({ headerTitle: groupInfo!.title });
         };
         loadGroup();
     }, [chat_uuid]);
@@ -91,13 +90,26 @@ export default function ChatPage() {
         const isUserMessage = item.username === username;
 
         return (
-            <View style={[styles.messageContainer, isUserMessage ? styles.selfMessagesContainer : styles.otherMessageContainer]}>
-                {item.message !== '' && <Text style={[styles.messageText, isUserMessage ? styles.userMessageText : null]}>{item.message}</Text>}
-                
-                <Text style={{
-                    fontSize: 12,
-                    color: '#474747',
-                }}>
+            <View
+                style={[styles.messageContainer, isUserMessage ? styles.selfMessagesContainer : styles.otherMessageContainer]}
+                testID={`message-${item._id}`}
+            >
+                {item.message !== '' && (
+                    <Text
+                        style={[styles.messageText, isUserMessage ? styles.userMessageText : null]}
+                        testID={`message-text-${item._id}`}
+                    >
+                        {item.message}
+                    </Text>
+                )}
+
+                <Text
+                    style={{
+                        fontSize: 12,
+                        color: '#474747',
+                    }}
+                    testID={`message-timestamp-${item._id}`}
+                >
                     {new Date(item._creationTime).toLocaleTimeString()} - {item.username}
                 </Text>
             </View>
@@ -105,15 +117,15 @@ export default function ChatPage() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#F8F5EA' }} behavior={'padding'} keyboardVerticalOffset={60}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} testID="chat-page">
+            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#F8F5EA' }} behavior={'padding'} keyboardVerticalOffset={60} testID="keyboard-page">
                 <FlatList ref={listRef} data={messages} renderItem={renderMessage} keyExtractor={(item) => item._id.toString()} ListFooterComponent={<View style={{ padding: 5 }} />} />
 
-                <View style={styles.inputContainer}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TextInput style={styles.textInput} value={newMessage} onChangeText={setNewMessage} placeholder="Type your message" multiline={true} />
+                <View style={styles.inputContainer} testID="input-container">
+                    <View style={{ flexDirection: 'row' }} testID="composer-container">
+                        <TextInput style={styles.textInput} value={newMessage} onChangeText={setNewMessage} placeholder="Type your message" multiline={true} testID="message-input"/>
 
-                        <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={newMessage === ''}>
+                        <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={newMessage === ''} testID="send-button">
                             <SendHorizontal color="#3F3F3F"/>
                         </TouchableOpacity>
                     </View>
@@ -135,7 +147,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-
         elevation: 3,
     },
     textInput: {
